@@ -8,11 +8,16 @@ app.use(express.json());
 // public ada di ../public dari folder api/
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-const API_KEY_PTRO = process.env.API_KEY_PTRO || '';
+/*const API_KEY_PTRO = process.env.API_KEY_PTRO || '';
 const CLIENT_API_KEY = process.env.CLIENT_API_KEY || '';
 const DOMAIN_PANEL = (process.env.DOMAIN_PANEL || '').replace(/\/$/, '');
 const CONFIG_LOC_ID = Number(process.env.CONFIG_LOC_ID || 1);
-const CONFIG_EGG_ID = Number(process.env.CONFIG_EGG_ID || 15);
+const CONFIG_EGG_ID = Number(process.env.CONFIG_EGG_ID || 15);*/
+const API_KEY_PTRO = 'ptla_fPwRd8QppEw7KyVWXUp8SA9xCN5mH6uahbprTDi8xqY';
+const CLIENT_API_KEY = 'ptlc_5gzvolQXzzkLK7tMEs92X7Oa4XSr1nRQzZ59PkT6MQZ';
+const DOMAIN_PANEL = 'https://panel.kyx.my.id';
+const CONFIG_LOC_ID = 1;
+const CONFIG_EGG_ID = 15;
 
 console.log('[BOOT] DOMAIN=', DOMAIN_PANEL, 'has_ptla=', !!API_KEY_PTRO, 'ptla_len=', API_KEY_PTRO.length, 'has_ptlc=', !!CLIENT_API_KEY, 'ptlc_len=', CLIENT_API_KEY.length);
 
