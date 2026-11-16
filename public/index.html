@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><style>
+@font-face {
+  font-family: "Optimistic";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Optimistic Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
+}
+:where(html) {
+  font-family: "Optimistic", system-ui, sans-serif;
+}
+:where(code, pre, kbd, samp) {
+  font-family: "Optimistic Mono", ui-monospace, monospace;
+}
+</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KYX - Ptero Control Panel</title>
+<style>
+  *{box-sizing:border-box} :root{--bg:#0b0f14;--card:#121821;--card2:#18202c;--line:#232e3d;--text:#e6edf3;--muted:#8b98a9;--green:#22c55e;--red:#ef4444;--amber:#f59e0b;--blue:#3b82f6;--purple:#8b5cf6}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  header{position:sticky;top:0;z-index:10;background:rgba(11,15,20,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:14px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+  header h1{margin:0;font-size:20px;letter-spacing:.2px} header h1 span{color:var(--blue)} header p{margin:2px 0 0;color:var(--muted);font-size:12px}
+  .wrap{max-width:1280px;margin:0 auto;padding:18px 20px 40px}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+  @media(max-width:800px){.stats{grid-template-columns:repeat(2,1fr)}}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+  .stat small{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+  .stat b{font-size:28px;display:block;margin-top:4px}
+  .stat span{font-size:12px;color:var(--muted)}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .toolbar{padding:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:var(--card2);border-bottom:1px solid var(--line)}
+  input,select{ background:#0b0f14;border:1px solid var(--line);color:var(--text);padding:10px 12px;border-radius:10px;outline:none;font-size:14px}
+  input:focus{border-color:var(--blue)}
+  button{border:0;padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer;font-size:13px;transition:.15s}
+  button:active{transform:scale(.97)} button:disabled{opacity:.5;cursor:not-allowed}
+  .btn-blue{background:var(--blue);color:#fff}.btn-red{background:var(--red);color:#fff}.btn-amber{background:var(--amber);color:#111}.btn-green{background:var(--green);color:#fff}.btn-ghost{background:#232e3d;color:var(--text)}.btn-purple{background:var(--purple);color:#fff}
+  .danger-zone{margin:16px 0;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  @media(max-width:900px){.danger-zone{grid-template-columns:1fr 1fr}} @media(max-width:520px){.danger-zone{grid-template-columns:1fr}}
+  .danger{background:#1a1214;border:1px solid #3a1a1e;border-radius:14px;padding:14px}
+  .danger h3{margin:0 0 6px;font-size:14px}.danger p{margin:0 0 10px;color:var(--muted);font-size:12px;line-height:1.5}.danger button{width:100%}
+  .tabs{display:flex;gap:8px;margin:16px 0 12px}.tabs button{flex:1}
+  .tabs button.active{background:var(--blue);color:#fff}
+  table{width:100%;border-collapse:collapse;font-size:13px} th{ text-align:left;padding:12px 10px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid var(--line);white-space:nowrap} td{padding:11px 10px;border-bottom:1px solid #17202c;vertical-align:middle}
+  tr:hover td{background:#131b26}
+  .badge{padding:4px 8px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap}
+  .on{background:#052e16;color:#4ade80}.off{background:#3f1212;color:#fca5a5}.unk{background:#2a2a2a;color:#cbd5e1}.susp{background:#3b1a00;color:#fbbf24}
+  .mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:#cbd5e1}
+  .name{font-weight:700}.sub{color:var(--muted);font-size:11px}
+  .row-actions{display:flex;gap:6px}.row-actions button{padding:7px 10px;font-size:12px}
+  #toast{position:fixed;right:16px;bottom:16px;background:#111827;border:1px solid var(--line);padding:12px 14px;border-radius:12px;max-width:360px;display:none;z-index:50;box-shadow:0 10px 30px rgba(0,0,0,.5);font-size:13px;line-height:1.5}
+  #toast.show{display:block}
+  .empty{padding:28px;text-align:center;color:var(--muted)}
+  .search{flex:1;min-width:200px}
+  .flex{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .note{font-size:12px;color:var(--muted);margin:8px 0 0;line-height:1.6}
+  dialog{border:1px solid var(--line);background:#121821;color:var(--text);border-radius:14px;padding:18px;max-width:440px;width:92%}
+  dialog::backdrop{background:rgba(0,0,0,.7)} dialog h3{margin:0 0 8px} dialog p{color:var(--muted);font-size:13px;line-height:1.6} dialog .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>KYX <span>PTERO</span> CONTROL</h1><p id="domainLabel">Loading panel...</p></div>
+  <div class="flex"><button class="btn-ghost" onclick="loadAll()">🔄 Refresh</button><button class="btn-blue" onclick="loadAll()">📡 Cek Koneksi</button></div>
+</header>
+
+<div class="wrap">
+  <div class="stats">
+    <div class="stat"><small>Total Server</small><b id="cTotal">-</b><span id="cTotalSub">-</span></div>
+    <div class="stat"><small>Online</small><b style="color:var(--green)" id="cOnline">-</b><span>status running</span></div>
+    <div class="stat"><small>Offline</small><b style="color:var(--red)" id="cOffline">-</b><span>offline / stopped</span></div>
+    <div class="stat"><small>User Tanpa Server</small><b style="color:var(--amber)" id="cNoServer">-</b><span id="cUserSub">-</span></div>
+  </div>
+
+  <div class="danger-zone">
+    <div class="danger">
+      <h3>🗑️ Del Server (No / ID)</h3><p>Hapus 1 server. Isi <b>No</b> (urutan di tabel) atau <b>ID</b> asli Pterodactyl.</p>
+      <div class="flex"><input id="delTarget" placeholder="Contoh: 3 atau 12" style="flex:1;min-width:120px"><button class="btn-red" onclick="delOne()">Delete</button></div>
+    </div>
+    <div class="danger">
+      <h3>📴 Del Server OFF</h3><p>Hapus semua server yang statusnya <b>offline / stopped</b>. Server online aman.</p>
+      <button class="btn-amber" onclick="openConfirm('off')">Delete Semua OFF</button>
+    </div>
+    <div class="danger">
+      <h3>💣 Del All Server</h3><p>Hapus <b>SEMUA</b> server <b>kecuali ID 2</b>. ID 2 akan dilewati otomatis.</p>
+      <button class="btn-red" onclick="openConfirm('all')">Delete ALL (kecuali ID 2)</button>
+    </div>
+    <div class="danger">
+      <h3>👤 Del User Tanpa Server</h3><p>Hapus semua user yang <b>tidak punya server</b>. Admin ID 1 dilewati otomatis.</p>
+      <button class="btn-purple" onclick="openConfirm('users')">Delete User No-Server</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button id="tabServers" class="active" onclick="switchTab('servers')">🖥️ List Server (<span id="tabServerCount">0</span>)</button>
+    <button id="tabUsers" onclick="switchTab('users')">👥 List User (<span id="tabUserCount">0</span>)</button>
+  </div>
+
+  <div class="panel">
+    <div class="toolbar">
+      <input id="search" class="search" placeholder="Cari nama, ID, identifier, email, node, egg..." oninput="render()">
+      <select id="filterStatus" onchange="render()"><option value="all">Semua Status</option><option value="running">Online</option><option value="offline">Offline</option><option value="stopped">Stopped</option><option value="unknown">Unknown</option></select>
+      <select id="filterNode" onchange="render()"><option value="all">Semua Node</option></select>
+      <span id="loading" style="font-size:13px;color:var(--muted)">Memuat...</span>
+    </div>
+    <div style="overflow:auto">
+      <table id="serverTable">
+        <thead><tr><th>No</th><th>Server</th><th>ID / Identifier</th><th>Owner</th><th>Node / Egg</th><th>Spec</th><th>Status</th><th>Aksi</th></tr></thead>
+        <tbody id="serverBody"></tbody>
+      </table>
+      <table id="userTable" style="display:none">
+        <thead><tr><th>ID</th><th>User</th><th>Email</th><th>Admin</th><th>Punya Server?</th><th>Created</th></tr></thead>
+        <tbody id="userBody"></tbody>
+      </table>
+    </div>
+    <p class="note" style="padding:0 14px 14px">⚠️ <b>Del All</b> melewati server dengan <b>ID = 2</b> (bukan No urutan ke-2). Kalau maksud lu No urutan ke-2, bilang gw biar gw ubah ke filter No. Tombol delete selalu minta konfirmasi 2x. API key tidak pernah dikirim ke browser — semua request lewat backend <code>/api/*</code>.</p>
+  </div>
+</div>
+
+<dialog id="confirmDialog">
+  <h3 id="confirmTitle">Yakin?</h3><p id="confirmDesc"></p>
+  <div style="margin-top:12px"><label style="font-size:12px;color:var(--muted)">Ketik konfirmasi untuk lanjut:</label><input id="confirmInput" style="width:100%;margin-top:6px" placeholder=""></div>
+  <div class="actions"><button class="btn-ghost" onclick="closeConfirm()">Batal</button><button class="btn-red" id="confirmBtn" onclick="doConfirmed()">Ya, Hapus</button></div>
+</dialog>
+
+<div id="toast"></div>
+
+<script>
+let servers = [], users = [], currentTab = 'servers', pendingAction = null;
+function toast(msg, ms=4200){ const t=document.getElementById('toast'); t.innerHTML=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), ms); }
+function esc(s){ return String(s??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+async function loadAll(){
+  document.getElementById('loading').textContent='Memuat...';
+  try{
+    const [h, s, u] = await Promise.all([ fetch('/api/health').then(r=>r.json()), fetch('/api/servers').then(r=>r.json()), fetch('/api/users').then(r=>r.json()) ]);
+    if(h.domain) document.getElementById('domainLabel').textContent = h.domain + ' • Loc ' + h.loc_id + ' • Egg ' + h.egg_id;
+    if(!s.success) throw new Error(s.message||'Gagal load servers');
+    if(!u.success) throw new Error(u.message||'Gagal load users');
+    servers = s.servers||[]; users = u.users||[];
+    document.getElementById('cTotal').textContent = s.counts.total;
+    document.getElementById('cTotalSub').textContent = s.counts.online + ' online • ' + s.counts.offline + ' offline';
+    document.getElementById('cOnline').textContent = s.counts.online;
+    document.getElementById('cOffline').textContent = s.counts.offline;
+    document.getElementById('cNoServer').textContent = u.counts.without_server;
+    document.getElementById('cUserSub').textContent = u.counts.total + ' total user • ' + u.counts.with_server + ' punya server';
+    document.getElementById('tabServerCount').textContent = servers.length;
+    document.getElementById('tabUserCount').textContent = users.length;
+    const nodes = [...new Set(servers.map(x=>x.node_name))].sort();
+    const sel = document.getElementById('filterNode');
+    sel.innerHTML = '<option value="all">Semua Node</option>' + nodes.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('');
+    render();
+  }catch(e){ toast('❌ '+e.message); } finally{ document.getElementById('loading').textContent=''; }
+}
+
+function switchTab(t){
+  currentTab=t;
+  document.getElementById('tabServers').classList.toggle('active', t==='servers');
+  document.getElementById('tabUsers').classList.toggle('active', t==='users');
+  document.getElementById('serverTable').style.display = t==='servers'?'table':'none';
+  document.getElementById('userTable').style.display = t==='users'?'table':'none';
+  render();
+}
+
+function render(){
+  const q = (document.getElementById('search').value||'').toLowerCase();
+  const fs = document.getElementById('filterStatus').value;
+  const fn = document.getElementById('filterNode').value;
+  if(currentTab==='servers'){
+    const filtered = servers.filter(s=>{
+      if(fs!=='all' && s.status!==fs) return false;
+      if(fn!=='all' && s.node_name!==fn) return false;
+      if(q && !JSON.stringify(s).toLowerCase().includes(q)) return false;
+      return true;
+    });
+    const tb = document.getElementById('serverBody');
+    if(!filtered.length){ tb.innerHTML='<tr><td colspan="8"><div class="empty">Tidak ada server yang cocok.</div></td></tr>'; return; }
+    tb.innerHTML = filtered.map(s=>{
+      const badge = s.status==='running' ? '<span class="badge on">● ONLINE</span>' : s.status==='offline' ? '<span class="badge off">● OFFLINE</span>' : s.status==='stopped' ? '<span class="badge off">● STOPPED</span>' : '<span class="badge unk">● '+esc(s.status.toUpperCase())+'</span>';
+      const susp = s.is_suspended ? ' <span class="badge susp">SUSPENDED</span>' : '';
+      const alloc = (s.allocations||[]).map(a=>a.ip+':'+a.port).join(', ') || (s.allocation? 'ID '+s.allocation : '-');
+      return `<tr>
+        <td><b>${s.no}</b>${s.id==2?' <span class="badge on">PROTECTED</span>':''}</td>
+        <td><div class="name">${esc(s.name)}</div><div class="sub">${esc(s.description||'')}</div></td>
+        <td><div class="mono">ID ${s.id}</div><div class="mono">${esc(s.identifier)}</div><div class="sub mono">${esc((s.uuid||'').slice(0,8))}…</div></td>
+        <td><div>${esc(s.user_name||'-')}</div><div class="sub">${esc(s.user_email||'')} • UID ${s.user_id}</div></td>
+        <td><div>${esc(s.node_name)}</div><div class="sub">${esc(s.egg_name)}</div></td>
+        <td><div class="mono">${s.limits.memory||0} MB • ${s.limits.disk||0} MB • ${s.limits.cpu||0}% CPU</div><div class="sub mono">${esc(alloc)}</div></td>
+        <td>${badge}${susp}</td>
+        <td><div class="row-actions"><button class="btn-red" onclick="delById(${s.id}, '${esc(s.name)}')">🗑️ Del</button></div></td>
+      </tr>`;
+    }).join('');
+  } else {
+    const filtered = users.filter(u=> !q || JSON.stringify(u).toLowerCase().includes(q));
+    const tb = document.getElementById('userBody');
+    if(!filtered.length){ tb.innerHTML='<tr><td colspan="6"><div class="empty">Tidak ada user.</div></td></tr>'; return; }
+    tb.innerHTML = filtered.map(u=>`<tr>
+      <td><b>${u.id}</b></td><td><div class="name">${esc(u.username)}</div><div class="sub">${esc((u.first_name||'')+' '+(u.last_name||''))}</div></td>
+      <td class="mono">${esc(u.email)}</td><td>${u.admin?'<span class="badge on">ADMIN</span>':'<span class="badge unk">USER</span>'}</td>
+      <td>${u.has_server?'<span class="badge on">PUNYA SERVER</span>':'<span class="badge off">TANPA SERVER</span>'}</td>
+      <td class="sub">${esc(new Date(u.created_at).toLocaleString('id-ID'))}</td></tr>`).join('');
+  }
+}
+
+async function delById(id, name){
+  if(!confirm(`Hapus server "${name}" (ID ${id}) ?`)) return;
+  try{ const r=await fetch('/api/servers/'+id,{method:'DELETE'}).then(r=>r.json()); toast(r.success?'✅ '+r.message:'❌ '+r.message); if(r.success) loadAll(); }catch(e){ toast('❌ '+e.message); }
+}
+async function delOne(){
+  const target=document.getElementById('delTarget').value.trim();
+  if(!target) return toast('Isi No / ID dulu');
+  if(!confirm(`Hapus server No/ID ${target} ?`)) return;
+  try{ const r=await fetch('/api/servers/one',{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({target})}).then(r=>r.json()); toast(r.success?'✅ '+r.message:'❌ '+r.message); if(r.success) loadAll(); }catch(e){ toast('❌ '+e.message); }
+}
+
+function openConfirm(action){
+  pendingAction=action;
+  const d=document.getElementById('confirmDialog');
+  const title=document.getElementById('confirmTitle'), desc=document.getElementById('confirmDesc'), inp=document.getElementById('confirmInput');
+  if(action==='off'){ title.textContent='Hapus Semua Server OFF?'; desc.innerHTML='Ini akan menghapus semua server dengan status <b>offline / stopped</b>. Server yang online tidak akan dihapus.'; inp.placeholder='Ketik: DELETE OFF'; inp.dataset.expect='DELETE OFF'; }
+  if(action==='all'){ title.textContent='⚠️ HAPUS SEMUA SERVER (kecuali ID 2)?'; desc.innerHTML='Ini <b>IRREVERSIBLE</b>. Semua server akan dihapus kecuali server dengan <b>ID 2</b>. Pastikan lu yakin.'; inp.placeholder='Ketik: DELETE ALL'; inp.dataset.expect='DELETE ALL'; }
+  if(action==='users'){ title.textContent='Hapus User Tanpa Server?'; desc.innerHTML='Ini akan menghapus semua user yang <b>tidak punya server</b>. Admin ID 1 dilewati.'; inp.placeholder='Ketik: DELETE USERS'; inp.dataset.expect='DELETE USERS'; }
+  inp.value=''; d.showModal();
+}
+function closeConfirm(){ document.getElementById('confirmDialog').close(); pendingAction=null; }
+async function doConfirmed(){
+  const inp=document.getElementById('confirmInput');
+  if(inp.value.trim()!==inp.dataset.expect){ toast('❌ Konfirmasi salah. Ketik persis: '+inp.dataset.expect); return; }
+  closeConfirm();
+  try{
+    let url='', body={};
+    if(pendingAction==='off'){ url='/api/servers/delete-off'; }
+    if(pendingAction==='all'){ url='/api/servers/delete-all'; body={confirm:'DELETE ALL'}; }
+    if(pendingAction==='users'){ url='/api/users/delete-no-server'; body={confirm:'DELETE USERS'}; }
+    toast('⏳ Memproses, tunggu...');
+    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(r=>r.json());
+    toast(r.success?'✅ '+r.message:'❌ '+r.message, 6000);
+    if(r.success) loadAll();
+  }catch(e){ toast('❌ '+e.message); }
+}
+loadAll();
+</script>
+<script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
+</html>
