@@ -2,9 +2,9 @@
   "name": "ptero-control-panel",
   "version": "1.0.0",
   "description": "Control panel Pterodactyl via Application API (ptla) + Client API (ptlc)",
-  "main": "index.js",
+  "main": "api/index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node api/index.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
